@@ -1,0 +1,10 @@
+{
+  "name": "rusDictation-Editor",
+  "references": [
+    "rusDictation"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}
