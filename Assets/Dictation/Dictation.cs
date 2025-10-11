@@ -67,19 +67,10 @@ public class Dictation : MonoBehaviour {
       
     }
 
-    void fun1()
-    {
-        _moduleSelected = true;
-    }
-    void fun2()
-    {
-        _moduleSelected = false;
-    }
-
    void Start () {
       PhraseIndex = UnityEngine.Random.Range(0, PhraseList.Count());
-        GetComponent<KMSelectable>().OnFocus += delegate { fun1(); };
-        GetComponent<KMSelectable>().OnDefocus += delegate { fun2(); };
+        GetComponent<KMSelectable>().OnFocus += delegate { _moduleSelected = true; };
+        GetComponent<KMSelectable>().OnDefocus += delegate { _moduleSelected = false; };
     }
 
    void KeyPress (KMSelectable Key) {
@@ -214,6 +205,7 @@ public class Dictation : MonoBehaviour {
    }
 
     string unQWERTY = "qwertyuiop[]asdfghjkl;'zxcvbnm,.1234567890";
+    string QWERTY = "QWERTYUIOPASDFGHJKLZXCVBNM";
     string unQWERTYrus = "ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ1234567890";
 
     void Update()
@@ -236,4 +228,34 @@ public class Dictation : MonoBehaviour {
         }
     }
 
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Use (!{0} старт) to start the message. Use (!{0} отправить XXXX) to submit the word.";
+#pragma warning restore 414
+
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        command = command.ToUpper();
+        if (command == "СТАРТ")
+        {
+            StartButton.OnInteract();
+        }
+        else if (Regex.IsMatch(command, "ОТПРАВИТЬ ([А-Я0-9A-Z]+)"))
+        {
+            string word = command.Substring(10);
+
+            for (int i = 0; i< word.Length; i++)
+            {
+                if (word[i] > 'Z' || word[i] < 'A') KeyPressRus(word[i]);
+                else KeyPress(TypableButtons[QWERTY.IndexOf(word[i])]);
+                yield return new WaitForSeconds(0.05f);
+            }
+            ReturnPress();
+        }
+        else yield return "sendtochaterror Invalid command.";
+    }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        yield return SolveAnimation();        
+    }
 }
