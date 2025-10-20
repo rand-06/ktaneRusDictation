@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using KModkit;
 
-public class Dictation : MonoBehaviour {
+public class rusDictation : MonoBehaviour {
 
    public KMBombInfo Bomb;
    public KMAudio Audio;
@@ -234,6 +234,7 @@ public class Dictation : MonoBehaviour {
 
     IEnumerator ProcessTwitchCommand(string command)
     {
+       yield return null;
         command = command.ToUpper();
         if (command == "СТАРТ")
         {
